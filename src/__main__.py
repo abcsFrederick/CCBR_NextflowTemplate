@@ -127,8 +127,7 @@ def run(main_path, output, _mode, force_all, **kwargs):
     docs: https://ccbr.github.io/TOOL_NAME
     """
     if (  # this is the only acceptable github repo option for tool_name
-        main_path != "CCBR/TOOL_NAME"
-        and not os.path.exists(main_path)
+        main_path != "CCBR/TOOL_NAME" and not os.path.exists(main_path)
     ):
         raise FileNotFoundError(
             f"Path to the tool_name main.nf file not found: {main_path}"
