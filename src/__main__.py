@@ -5,14 +5,14 @@ Check out the wiki for a detailed look at customizing this file:
 https://github.com/beardymcjohnface/Snaketool/wiki/Customising-your-Snaketool
 """
 
-import cffconvert.cli.cli
-import click
 import os
 import pathlib
 
-import ccbr_tools.pkg_util
-import ccbr_tools.pipeline.util
 import ccbr_tools.pipeline.nextflow
+import ccbr_tools.pipeline.util
+import ccbr_tools.pkg_util
+import cffconvert.cli.cli
+import click
 
 
 def repo_base(*paths):
@@ -31,7 +31,7 @@ def print_citation_flag(ctx, param, value):
 
 @click.group(
     cls=ccbr_tools.pkg_util.CustomClickGroup,
-    context_settings=dict(help_option_names=["-h", "--help"]),
+    context_settings={"help_option_names": ["-h", "--help"]},
 )
 @click.version_option(
     ccbr_tools.pkg_util.get_version(repo_base=repo_base),
@@ -55,7 +55,6 @@ def cli():
 
     For more options, run:
     tool_name [command] --help"""
-    pass
 
 
 help_msg_extra = """
@@ -79,9 +78,10 @@ Add nextflow args (anything supported by `nextflow run`):
 
 @click.command(
     epilog=help_msg_extra,
-    context_settings=dict(
-        help_option_names=["-h", "--help"], ignore_unknown_options=True
-    ),
+    context_settings={
+        "help_option_names": ["-h", "--help"],
+        "ignore_unknown_options": True,
+    },
 )
 @click.option(
     "--main",
@@ -127,13 +127,11 @@ def run(main_path, output, _mode, force_all, **kwargs):
     docs: https://ccbr.github.io/TOOL_NAME
     """
     if (  # this is the only acceptable github repo option for tool_name
-        main_path != "CCBR/TOOL_NAME"
+        main_path != "CCBR/TOOL_NAME" and not os.path.exists(main_path)
     ):
-        # make sure the path exists
-        if not os.path.exists(main_path):
-            raise FileNotFoundError(
-                f"Path to the tool_name main.nf file not found: {main_path}"
-            )
+        raise FileNotFoundError(
+            f"Path to the tool_name main.nf file not found: {main_path}"
+        )
     output_dir = output if isinstance(output, pathlib.Path) else pathlib.Path(output)
     if not output_dir.is_dir() or not (output_dir / "nextflow.config").exists():
         raise FileNotFoundError(
